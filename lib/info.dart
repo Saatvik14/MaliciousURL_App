@@ -48,7 +48,9 @@ class _InfoState extends State<Info> {
               ),
             ),
             FloatingActionButton(
-              onPressed: () async {},
+              onPressed: () async {
+                await getData(_urlController.text);
+              },
             ),
             FutureBuilder<Album>(
               builder: (context, snapshot) {
