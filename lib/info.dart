@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'api.dart';
@@ -10,12 +12,13 @@ class Info extends StatefulWidget {
 }
 
 class _InfoState extends State<Info> {
+  late Future<Album> fetch;
+  final _urlController = TextEditingController();
   @override
   void initState() {
+    fetch = getData(_urlController.text);
     super.initState();
   }
-
-  final _urlController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -45,16 +48,17 @@ class _InfoState extends State<Info> {
               ),
             ),
             FloatingActionButton(
-              child: Icon(Icons.search),
-              onPressed: () async {
-                setState(() async {
-                  fetchdata = await getRiskScore(_urlController.text);
-                });
-                //var data =await getRiskScore(_urlController.text);
-                //Text('$data');
-              },
+              onPressed: () async {},
             ),
-            Text(fetchdata.toString()),
+            FutureBuilder<Album>(
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Text(snapshot.data!.value.toString());
+                } else {
+                  return CircularProgressIndicator();
+                }
+              },
+            )
           ],
         ),
       ),
