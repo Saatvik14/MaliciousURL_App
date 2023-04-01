@@ -1,10 +1,11 @@
-import 'dart:html';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'api.dart';
 
 var fetchdata;
+
+int? score;
+String? inputURL;
 
 class Info extends StatefulWidget {
   @override
@@ -12,13 +13,7 @@ class Info extends StatefulWidget {
 }
 
 class _InfoState extends State<Info> {
-  late Future<Album> fetch;
   final _urlController = TextEditingController();
-  @override
-  void initState() {
-    fetch = getData(_urlController.text);
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +31,11 @@ class _InfoState extends State<Info> {
                   labelText: 'Enter a URL',
                   border: OutlineInputBorder(),
                 ),
+                onChanged: (value) {
+                  setState(() {
+                    inputURL = value;
+                  });
+                },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a URL';
@@ -49,18 +49,13 @@ class _InfoState extends State<Info> {
             ),
             FloatingActionButton(
               onPressed: () async {
-                await getData(_urlController.text);
+                Album fetchdata = await getData(inputURL.toString());
+                setState(() {
+                  score = fetchdata.value;
+                });
               },
             ),
-            FutureBuilder<Album>(
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Text(snapshot.data!.value.toString());
-                } else {
-                  return CircularProgressIndicator();
-                }
-              },
-            )
+            score == null ? Text("Press the button") : Text(score.toString())
           ],
         ),
       ),

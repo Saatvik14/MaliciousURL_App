@@ -1,7 +1,11 @@
-/*import 'dart:ui';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'api.dart';
+
+String? inputURL;
+int? score;
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
@@ -13,8 +17,6 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeState extends State<WelcomeScreen> {
   final _formKey = GlobalKey<FormState>();
   final _urlController = TextEditingController();
-  double? _riskScore;
-  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +73,11 @@ class _WelcomeState extends State<WelcomeScreen> {
                     labelText: 'Enter a URL',
                     border: OutlineInputBorder(),
                   ),
+                  onChanged: (value) {
+                    setState(() {
+                      inputURL = value;
+                    });
+                  },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a URL';
@@ -82,27 +89,17 @@ class _WelcomeState extends State<WelcomeScreen> {
                   },
                 ),
                 SizedBox(height: 16.0),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(primary: Colors.indigo[200]),
-                  onPressed: _isLoading ? null : _submitForm,
-                  child: _isLoading
-                      ? CircularProgressIndicator()
-                      : Text(
-                          'Check Risk Score',
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
+                FloatingActionButton(
+                  onPressed: () async {
+                    Album fetchdata = await getData(inputURL.toString());
+                    setState(() {
+                      score = fetchdata.value;
+                    });
+                  },
                 ),
-                if (_riskScore != null) ...[
-                  Container(
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.only(bottom: 10),
-                    child: Text(
-                      'Risk score: ${_riskScore!.toStringAsFixed(2)}',
-                      style: TextStyle(fontSize: 20, color: Colors.black),
-                    ),
-                  ),
-                ],
+                score == null
+                    ? Text("Press the button")
+                    : Text(score.toString()),
               ],
             ),
           ),
@@ -110,8 +107,9 @@ class _WelcomeState extends State<WelcomeScreen> {
       ),
     );
   }
+}
 
-  Future<void> _submitForm() async {
+ /* Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
