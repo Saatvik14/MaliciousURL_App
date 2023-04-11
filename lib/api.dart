@@ -33,7 +33,7 @@ class Album {
 Future<Album> getData(String url) async {
   http.Response response = await http.get(
     Uri.parse(
-        'https://endpoint.apivoid.com/urlrep/v1/pay-as-you-go/?key=f4d8e5ff5f197009e3280548310093646f5a662d&url=$url'),
+        'https://endpoint.apivoid.com/urlrep/v1/pay-as-you-go/?key=74b2e3d2cd6b4f69d1e0ec82223d4b6dcf9443dd&url=$url'),
   );
   if (response.statusCode == 200) {
     print(response.body);
