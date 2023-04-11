@@ -99,13 +99,23 @@ class _WelcomeState extends State<WelcomeScreen> {
                 ),
                 score == null
                     ? Text("Press the button")
-                    : Text(score.toString()),
+                    : score! > 50
+                        ? Text("BAD")
+                        : Text('good'),
               ],
             ),
           ),
         ),
       ),
     );
+  }
+}
+
+func(int? s) {
+  if (s! > 50) {
+    Text("URL is bad");
+  } else {
+    Text('URL is good');
   }
 }
 
